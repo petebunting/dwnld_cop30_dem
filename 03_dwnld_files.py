@@ -42,6 +42,7 @@ def download_http_files_use_lst_db(
         out_file_exists = os.path.exists(out_file_path)
         
         if chk_out_file_exists and out_file_exists:
+            lst_db.updateById(dwn_file["id"], {"lcl_path": out_file_path, "downloaded": True})
             continue
         
         if use_wget:
@@ -50,9 +51,7 @@ def download_http_files_use_lst_db(
             downloaded = download_file_http(dwn_file["http_url"], out_file_path, username = username, password = password, no_except = True)
         
         if downloaded:
-            lst_db.updateById(
-                dwn_file["id"], {"lcl_path": out_file_path, "downloaded": True}
-            )
+            lst_db.updateById(dwn_file["id"], {"lcl_path": out_file_path, "downloaded": True})
         
         
 
