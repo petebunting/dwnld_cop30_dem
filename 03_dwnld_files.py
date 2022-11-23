@@ -64,4 +64,4 @@ if __name__ == "__main__":
 
     download_http_files_use_lst_db(
         db_json=args.input,
-        out_dir_path=args.output, use_wget=False, chk_out_file_exists=False)
+        out_dir_path=args.output, use_wget=False, chk_out_file_exists=True)
