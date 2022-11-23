@@ -47,7 +47,6 @@ def download_http_files_use_lst_db(
                 dwn_file["id"], {"lcl_path": out_file_path, "downloaded": True}
             )
         
-        break
         
 
 
@@ -55,7 +54,7 @@ def download_http_files_use_lst_db(
 
 download_http_files_use_lst_db(
     db_json="cop_dem_glo_30_urls_pydb.json",
-    out_dir_path="cop_dems", use_wget=False)
+    out_dir_path="../copernicus-dem-30m", use_wget=False)
 
 
 
