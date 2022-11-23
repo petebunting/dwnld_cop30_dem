@@ -1,4 +1,5 @@
 import os
+import argparse
 
 def download_http_files_use_lst_db(
     db_json: str,
@@ -6,6 +7,7 @@ def download_http_files_use_lst_db(
     username: str = None,
     password: str = None,
     use_wget: bool = False,
+    chk_out_file_exists: bool = False,
 ):
     """
     A function which uses the pysondb JSON database to download all the files
@@ -37,6 +39,11 @@ def download_http_files_use_lst_db(
         print(dwn_file["http_url"])
         filename = os.path.basename(dwn_file["http_url"])
         out_file_path = os.path.join(out_dir_path, filename)
+        out_file_exists = os.path.exists(out_file_path)
+        
+        if chk_out_file_exists and out_file_exists:
+            continue
+        
         if use_wget:
             downloaded, out_message = wget_download_file(dwn_file["http_url"], out_file_path, username = username, password = password, try_number = 10, time_out = 60)
         else:
@@ -50,50 +57,12 @@ def download_http_files_use_lst_db(
         
 
 
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-i", "--input", type=str, required=True, help="Input file")
+    parser.add_argument("-o", "--output", type=str, required=True, help="Output directory.")
+    args = parser.parse_args()
 
-
-download_http_files_use_lst_db(
-    db_json="cop_dem_glo_30_urls_pydb.json",
-    out_dir_path="../copernicus-dem-30m", use_wget=False)
-
-
-
-
-   
-"""        
-        if create_dir_struct:
-            dir_path = os.path.dirname(dwn_file["rmt_path"])
-            if dir_path[0] == "/":
-                dir_path = dir_path[1:]
-            local_dir_path = os.path.join(out_dir_path, dir_path)
-            if not os.path.exists(local_dir_path):
-                os.makedirs(local_dir_path)
-            local_path = os.path.join(local_dir_path, basename)
-        else:
-            local_path = os.path.join(out_dir_path, basename)
-        if use_curl:
-            dwnlded = download_curl_ftp_file(
-                ftp_url=dwn_file["ftp_url"],
-                remote_file=dwn_file["rmt_path"],
-                local_file=local_path,
-                ftp_timeout=ftp_timeout,
-                ftp_user=ftp_user,
-                ftp_pass=ftp_pass,
-                print_info=False,
-            )
-        else:
-            dwnlded = download_ftp_file(
-                ftp_url=dwn_file["ftp_url"],
-                remote_file=dwn_file["rmt_path"],
-                local_file=local_path,
-                ftp_timeout=ftp_timeout,
-                ftp_user=ftp_user,
-                ftp_pass=ftp_pass,
-                print_info=False,
-            )
-        if dwnlded:
-            lst_db.updateById(
-                dwn_file["id"], {"lcl_path": local_path, "downloaded": True}
-            )
-            
-"""
+    download_http_files_use_lst_db(
+        db_json=args.input,
+        out_dir_path=args.output, use_wget=False, chk_out_file_exists=False)
